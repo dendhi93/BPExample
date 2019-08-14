@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PrintApps</string>
+    <string name="main_activity">Home</string>
+    <string name="search_activity">Search Device</string>
 </resources>
