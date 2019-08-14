@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.coba.printapps.R;
 import com.coba.printapps.utils.BluetoothHandler;
+import com.coba.printapps.utils.PrinterCommands;
 import com.zj.btsdk.BluetoothService;
 
 import java.util.List;
@@ -50,7 +51,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     @Override
     protected void onStart(){
+        super.onStart();
         initBluetooth();
+        btn_print_image.setVisibility(View.GONE);
         btn_print_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,7 +72,9 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     tv_status.setText("mohon diisi data yang kosong");
                 }else{
                     if (isPrinterReady){
-
+                        mService.write(PrinterCommands.ESC_ALIGN_CENTER);
+                        mService.sendMessage(et_text.getText().toString(), "");
+                        mService.write(PrinterCommands.ESC_ENTER);
                     }else{ printerNotReady(); }
                 }
             }
