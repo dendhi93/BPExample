@@ -12,6 +12,8 @@ public class DeviceActivity extends AppCompatActivity {
     TextView title_paired_devices,title_new_devices;
     ListView paired_devices,new_devices;
 
+    public static final String EXTRA_DEVICE_ADDRESS = "device_address";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

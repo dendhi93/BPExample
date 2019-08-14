@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             @Override
             public void onClick(View view) {
                 if (isPrinterReady) {
-
+                    Toast.makeText(getApplicationContext(), "Under Maintenance", Toast.LENGTH_LONG);
                 }else{ Toast.makeText(getApplicationContext(), "Belum terhubung ke Perangkat", Toast.LENGTH_LONG); }
             }
         });
@@ -66,11 +68,39 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 }else if (et_text.getText().toString().isEmpty()){
                     tv_status.setText("mohon diisi data yang kosong");
                 }else{
-                    //todo lanjutkan
+                    if (isPrinterReady){
+
+                    }else{ printerNotReady(); }
                 }
             }
         });
 
+    }
+
+    private void printerNotReady(){
+        if (mService.isBTopen()){
+            startActivityForResult(new Intent(this, DeviceActivity.class), RC_CONNECT_DEVICE);
+        }
+        else{requestBluetooth();}
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RC_ENABLE_BLUETOOTH:
+                if (resultCode == RESULT_OK) {
+                    Log.i(TAG, "onActivityResult: bluetooth aktif");
+                } else
+                    Log.i(TAG, "onActivityResult: bluetooth harus aktif untuk menggunakan fitur ini");
+                break;
+            case RC_CONNECT_DEVICE:
+                if (resultCode == RESULT_OK) {
+                    String address = data.getExtras().getString(DeviceActivity.EXTRA_DEVICE_ADDRESS);
+                    BluetoothDevice mDevice = mService.getDevByMac(address);
+                    mService.connect(mDevice);
+                }
+                break;
+        }
     }
 
     @AfterPermissionGranted(RC_BLUETOOTH)
